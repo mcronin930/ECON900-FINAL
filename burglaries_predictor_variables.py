@@ -13,7 +13,15 @@ locations['Longitude'] = locations['Longitude'].str.replace(')', '').astype(floa
 locations = locations.values.tolist()
 print(locations)
 
-### Read In Burglary Data
+### Read In Low Income Housing Data
+low_income = pd.read_csv("crime_data/Affordable_Rental_Housing_Developments.csv")[['Community Area Number']]
+low_income['count'] = 1
+low_income['Community Area Number'] = low_income['Community Area Number'].astype(str) + '.0_area'
+low_income = low_income.groupby('Community Area Number') \
+     .agg({'count': 'sum'})
+low_income.columns = ['LI_COUNT']
+
+## Read In Burglary Data
 data = pd.read_csv("subset_data.csv").reset_index()
 data = data.dropna(subset=['Community_Areas', 'Latitude', 'Longitude', 'Date', 'Police_Beats']) \
     .sort_values(by=['Community_Areas', 'Date', 'Primary_Type']) \
@@ -41,10 +49,13 @@ community_area_stats = data.groupby('Community_Areas') \
      .agg({'day_delta':'mean', 'count': 'sum'})
 community_area_stats.columns = ['CA_AVG_DELTA','CA_COUNT']
 data = data.join(community_area_stats).drop('count', axis=1)
-print(data)
+
+# Low Income Housing
+data = data.join(low_income)
+data['LI_COUNT'] = data['LI_COUNT'].fillna(0)
 
 ### Law Enforcement Related Features ###
-#Police Count
+# Police Count
 data['police'] = data['Police_Beats']
 
 # Distance to police station
@@ -66,9 +77,5 @@ for l in locations:
     i = i+1
 data['min_distance'] = data.loc[:, 'dist_1':'dist_23'].min(axis=1)
 data = data.drop(data.loc[:, 'dist_1':'dist_23'], axis=1)
-
-# Number of Burglaries in Last 30 days
-
-
-# Export Data
+### Export Data
 data.to_csv("training_data_burglary.csv", index = False)
