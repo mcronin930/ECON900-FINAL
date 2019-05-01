@@ -8,10 +8,8 @@ f = "crime_data/Crimes_-_2001_to_present.csv"
 # Count the lines
 num_lines = sum(1 for l in open(f))
 print(num_lines)
-
-# Sample size - in this case ~10%
-size = int(num_lines / 10)
-
+# Sample size - in this case ~20% - Anymore than this i run into memory issues
+size = int(num_lines / 5)
 # The row indices to skip - make sure 0 is not included to keep the header!
 skip_idx = random.sample(range(1, num_lines), num_lines - size)
 
