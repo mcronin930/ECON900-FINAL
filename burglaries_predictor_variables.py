@@ -19,6 +19,7 @@ data = data.dropna(subset=['Community_Areas', 'Latitude', 'Longitude', 'Date', '
     .sort_values(by=['Community_Areas', 'Date', 'Primary_Type']) \
     .reset_index()
 
+### Time Related Features ###
 # Days Since Last Burglary In Community Zone
 data['day_count_since_010101'] = (data['days_since_010101']/np.timedelta64(1,'h'))/24
 data['day_delta'] = data['day_count_since_010101'].diff()
@@ -28,16 +29,25 @@ data['working_hours'] = np.where((data['hour']>=8) & (data['hour']<19), 1, 0)
 data['winter'] = np.where((data['month']>=10) | (data['month']<4), 1, 0)
 data['work_day'] = np.where((data['day']>=5), 1, 0)
 
+### Geographical Related Features ###
 # Dummies for Community Areas
 data['Community_Areas'] = data['Community_Areas'].astype(str) + '_area'
 com_dummies = pd.get_dummies(data['Community_Areas'])
-print(com_dummies)
 data = data.join(com_dummies).set_index(['Community_Areas']).drop('1.0_area', axis=1)
 
+# Community Area Stats
+data['count'] = 1
+community_area_stats = data.groupby('Community_Areas') \
+     .agg({'day_delta':'mean', 'count': 'sum'})
+community_area_stats.columns = ['CA_AVG_DELTA','CA_COUNT']
+data = data.join(community_area_stats).drop('count', axis=1)
+print(data)
+
+### Law Enforcement Related Features ###
 #Police Count
 data['police'] = data['Police_Beats']
 
-#Distance to police station
+# Distance to police station
 def distance(o_lat, o_lon, e_lat, e_lon):
     radius = 6371 # km
     dlat = math.radians(e_lat-o_lat)
@@ -57,4 +67,8 @@ for l in locations:
 data['min_distance'] = data.loc[:, 'dist_1':'dist_23'].min(axis=1)
 data = data.drop(data.loc[:, 'dist_1':'dist_23'], axis=1)
 
+# Number of Burglaries in Last 30 days
+
+
+# Export Data
 data.to_csv("training_data_burglary.csv", index = False)
