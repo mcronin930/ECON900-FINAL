@@ -50,7 +50,7 @@ community_area_stats = data.groupby('Community_Areas') \
 community_area_stats.columns = ['CA_AVG_DELTA','CA_COUNT']
 data = data.join(community_area_stats).drop('count', axis=1)
 
-# Low Income Housing
+# Affordable Income Housing
 data = data.join(low_income)
 data['LI_COUNT'] = data['LI_COUNT'].fillna(0)
 
