@@ -5,12 +5,11 @@ import random
 # The data to load
 f = "crime_data/Crimes_-_2001_to_present.csv"
 
-# Count the lines
+# Code to load random sample of .csv
 num_lines = sum(1 for l in open(f))
 print(num_lines)
-# Sample size - in this case ~20% - Anymore than this i run into memory issues
+# Sample size - in this case ~20% - Anymore than this I run into memory issues
 size = int(num_lines / 5)
-# The row indices to skip - make sure 0 is not included to keep the header!
 skip_idx = random.sample(range(1, num_lines), num_lines - size)
 
 # Read the data
@@ -32,6 +31,8 @@ data['month'] = data.Date.dt.month
 data['jan012001'] = "1/01/2001  0:00:00 AM"
 data['jan012001'] = data['jan012001'].astype('datetime64[ns]')
 data['days_since_010101'] = data['Date'] - data['jan012001']
+
+
 BURGLARY = data[data.Primary_Type == 'BURGLARY']
 
 print(BURGLARY.dtypes)

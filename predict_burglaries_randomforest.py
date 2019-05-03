@@ -10,11 +10,9 @@ n = 90
 #
 data = pd.read_csv("training_data_burglary.csv")
 Training_Target = np.where((data['day_delta'] < 14), 1, 0)
-print(Training_Target)
 Training_Data = data.iloc[:,np.r_[32:115]]
-print(Training_Data)
 
-data_training, data_test, target_training, target_test = train_test_split(Training_Data, Training_Target, test_size = 0.2, random_state=1)
+data_training, data_test, target_training, target_test = train_test_split(Training_Data, Training_Target, test_size = 0.25, random_state=1)
 random_forest_machine = RandomForestClassifier(n_estimators=n)
 random_forest_machine.fit(data_training, target_training)
 predictions = random_forest_machine.predict(data_test)

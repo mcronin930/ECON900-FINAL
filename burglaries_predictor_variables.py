@@ -58,7 +58,7 @@ data['LI_COUNT'] = data['LI_COUNT'].fillna(0)
 # Police Count
 data['police'] = data['Police_Beats']
 
-# Distance to police station
+# Heversine Distance to police station
 def distance(o_lat, o_lon, e_lat, e_lon):
     radius = 6371 # km
     dlat = math.radians(e_lat-o_lat)
@@ -77,5 +77,6 @@ for l in locations:
     i = i+1
 data['min_distance'] = data.loc[:, 'dist_1':'dist_23'].min(axis=1)
 data = data.drop(data.loc[:, 'dist_1':'dist_23'], axis=1)
+
 ### Export Data
 data.to_csv("training_data_burglary.csv", index = False)
