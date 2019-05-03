@@ -13,14 +13,17 @@ size = int(num_lines / 5)
 skip_idx = random.sample(range(1, num_lines), num_lines - size)
 
 # Read the data
-## According to Chicago Data Portal, 'Community Areas' is current. I am going to remove 'Community Area'.
-drops = ['Case Number', 'Block',  'Description',  'Location Description', 'Updated On', 'Community Area']
+## According to Chicago Data Portal, 'Community Areas' is current.
+## I am going to remove 'Community Area'.
+drops = ['Case Number', 'Block',  'Description',  'Location Description',
+                    'Updated On', 'Community Area']
 data = pd.read_csv(f, skiprows=skip_idx).drop(drops, axis=1)
 data.columns = ['ID','Date','IUCR',
                      'Primary_Type','Arrest','Domestic', 'Beat', 'District',
                      'Ward', 'FBI_Code', 'X_Coordinate', 'Y_Coordinate',
-                     'Year', 'Latitude', 'Longitude', 'Location', 'Historical_Wards',
-                     'Zip Codes', 'Community_Areas', 'Census_Tracts', 'Wards', 'Boundaries_ZIP',
+                     'Year', 'Latitude', 'Longitude', 'Location',
+                     'Historical_Wards', 'Zip Codes', 'Community_Areas',
+                     'Census_Tracts', 'Wards', 'Boundaries_ZIP',
                      'Police_Dist', 'Police_Beats']
 
 
